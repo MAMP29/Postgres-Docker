@@ -1,0 +1,36 @@
+Network:
+    docker network create pg_network
+
+Servidor:
+    docker run --name pg_server --network pg_network -e POSTGRES_PASSWORD=12345 -v pg-db:/var/lib/postgresql/data -v ~/postgres-data/init:/docker-entrypoint-initdb.d -d postgres:15
+
+Consultar si existe base de datos:
+    docker exec -it pg_server psql -U postgres -c "\l"
+
+
+Cliente:
+    docker run --name pg_client  -it  --network pg_network  -e POSTGRES_PASSWORD=12345   -d postgres:15  
+
+Conexión cliente a servidor:
+    docker exec -it pg_client psql -h pg_server -U postgres -d tarea_db
+
+Listar tablas:
+    \dt
+
+Consulta:
+    SELECT * FROM pg_tabla; 
+
+
+Detener contenedores:
+    docker stop pg_client
+    docker stop pg_server
+
+Eliminar contenedores:
+    docker rm pg_client
+    docker rm pg_server
+
+Eliminar volumen:
+    docker volume rm pg_db
+
+Eliminar network:
+    docker network rm pg_network
